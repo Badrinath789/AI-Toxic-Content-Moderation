@@ -11,12 +11,11 @@ LABELS = [
     "insult",
     "identity_hate"
 ]
+MODEL_NAME = "Badrinath789/toxic-content-detector"
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
 
-tokenizer = AutoTokenizer.from_pretrained("model/trained_model")
 
-model = AutoModelForSequenceClassification.from_pretrained(
-    "model/trained_model"
-)
 
 model.to(DEVICE)
 model.eval()
