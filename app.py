@@ -355,30 +355,39 @@ This application performs
                 st.bar_chart(
                     explain_df.set_index("Category")
                 )
-
                 highest = explain_df.iloc[0]
-
-                st.success(f"Prediction: {highest['Category']}")
-
+                TOXICITY_THRESHOLD = 0.50
+                if highest["Score"] >= TOXICITY_THRESHOLD:
+                    predicted_category = highest["Category"]
+                else:
+                    predicted_category = "SAFE"
+                    # ---------------------------------------
+# Display Prediction
+# ---------------------------------------
+                if predicted_category == "safe":
+                    st.success("Prediction: SAFE")
+                else:
+                    st.warning(
+                        f"Prediction: {predicted_category}"
+                    )
                 st.metric(
                     "Confidence",
                     f"{highest['Score']:.2%}"
-         )
-
+                )
                 st.markdown("### Why was this prediction made?")
 
-                if highest["Score"] >= 0.80:
+                if predicted_category == "safe":
+                    st.success(
+                        "The model did not detect any significant toxicity in the comment."
+                    )
+                elif highest["Score"] >= 0.80:
                     st.warning(
                         "The model detected a very strong presence of this toxicity category."
                     )
                 elif highest["Score"] >= 0.50:
                     st.info(
-                         "The model found a moderate presence of this toxicity category."
+                        "The model found a moderate presence of this toxicity category."
                     )
-                else:
-                    st.success(
-                         "Only a weak indication of this toxicity category was detected."
-                 )
                     
                     
 
@@ -393,7 +402,7 @@ This application performs
     f"""
 ### Model Summary
 
-- **Predicted Category:** {highest['Category']}
+- **Predicted Category:** {predicted_category}
 - **Confidence Score:** {highest['Score']:.2%}
 - **Severity Level:** {severity}
 - **Recommended Action:** {action}
